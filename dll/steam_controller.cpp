@@ -344,25 +344,45 @@ void Steam_Controller::EnableDeviceCallbacks()
         return;
     }
 
+    // Games commonly wait for this callback (SDK header: "will always fire if
+    // you have a handler") before resolving action set/action handles. Post it
+    // right after the device-connected callback since our action sets are
+    // already parsed from configs.app.ini + controller/*.txt at this point.
+    auto post_config_loaded = [this](ControllerHandle_t device_handle) {
+        SteamInputConfigurationLoaded_t data{};
+        data.m_unAppID = settings->get_local_game_id().AppID();
+        data.m_ulDeviceHandle = device_handle;
+        data.m_ulMappingCreator = settings->get_local_steam_id();
+        data.m_unMajorRevision = 1;
+        data.m_unMinorRevision = 0;
+        data.m_bUsesSteamInputAPI = !action_handles.empty();
+        data.m_bUsesGamepadAPI = false;
+        callbacks->addCBResult(data.k_iCallback, &data, sizeof(data));
+    };
+
     if (GamepadIsConnected(GAMEPAD_0)) {
         SteamInputDeviceConnected_t data{};
         data.m_ulConnectedDeviceHandle = GAMEPAD_0 + 1;
         callbacks->addCBResult(data.k_iCallback, &data, sizeof(data));
+        post_config_loaded(GAMEPAD_0 + 1);
     }
     if (GamepadIsConnected(GAMEPAD_1)) {
         SteamInputDeviceConnected_t data{};
         data.m_ulConnectedDeviceHandle = GAMEPAD_1 + 1;
         callbacks->addCBResult(data.k_iCallback, &data, sizeof(data));
+        post_config_loaded(GAMEPAD_1 + 1);
     }
     if (GamepadIsConnected(GAMEPAD_2)) {
         SteamInputDeviceConnected_t data{};
         data.m_ulConnectedDeviceHandle = GAMEPAD_2 + 1;
         callbacks->addCBResult(data.k_iCallback, &data, sizeof(data));
+        post_config_loaded(GAMEPAD_2 + 1);
     }
     if (GamepadIsConnected(GAMEPAD_3)) {
         SteamInputDeviceConnected_t data{};
         data.m_ulConnectedDeviceHandle = GAMEPAD_3 + 1;
         callbacks->addCBResult(data.k_iCallback, &data, sizeof(data));
+        post_config_loaded(GAMEPAD_3 + 1);
     }
 }
 
