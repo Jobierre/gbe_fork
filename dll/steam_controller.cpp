@@ -338,9 +338,32 @@ bool Steam_Controller::BNewDataAvailable()
 // callback when you enable them
 void Steam_Controller::EnableDeviceCallbacks()
 {
-    PRINT_DEBUG_TODO();
-    //TODO SteamInput005
-    return;
+    PRINT_DEBUG_ENTRY();
+
+    if (disabled) {
+        return;
+    }
+
+    if (GamepadIsConnected(GAMEPAD_0)) {
+        SteamInputDeviceConnected_t data{};
+        data.m_ulConnectedDeviceHandle = GAMEPAD_0 + 1;
+        callbacks->addCBResult(data.k_iCallback, &data, sizeof(data));
+    }
+    if (GamepadIsConnected(GAMEPAD_1)) {
+        SteamInputDeviceConnected_t data{};
+        data.m_ulConnectedDeviceHandle = GAMEPAD_1 + 1;
+        callbacks->addCBResult(data.k_iCallback, &data, sizeof(data));
+    }
+    if (GamepadIsConnected(GAMEPAD_2)) {
+        SteamInputDeviceConnected_t data{};
+        data.m_ulConnectedDeviceHandle = GAMEPAD_2 + 1;
+        callbacks->addCBResult(data.k_iCallback, &data, sizeof(data));
+    }
+    if (GamepadIsConnected(GAMEPAD_3)) {
+        SteamInputDeviceConnected_t data{};
+        data.m_ulConnectedDeviceHandle = GAMEPAD_3 + 1;
+        callbacks->addCBResult(data.k_iCallback, &data, sizeof(data));
+    }
 }
 
 // Enable SteamInputActionEvent_t callbacks. Directly calls your callback function
