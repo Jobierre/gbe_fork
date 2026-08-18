@@ -309,8 +309,11 @@ void Steam_Controller::SetOverrideMode( const char *pchMode )
 bool Steam_Controller::SetInputActionManifestFilePath( const char *pchInputActionManifestAbsolutePath )
 {
     PRINT_DEBUG_TODO();
-    //TODO SteamInput005
-    return false;
+    //TODO SteamInput005: not actually parsing the manifest file; action sets are already
+    //loaded independently from configs.app.ini + controller/*.txt. Report success so games
+    //that gate their controller init on this call's return value proceed to the (implemented)
+    //action query API instead of aborting.
+    return true;
 }
 
 bool Steam_Controller::BWaitForData( bool bWaitForever, uint32 unTimeout )
