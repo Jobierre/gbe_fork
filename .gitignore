@@ -1,6 +1,8 @@
 # IDE
 **/.vs
 **/.vscode
+.DS_store
+
 
 # PYTHON
 **/.venv
